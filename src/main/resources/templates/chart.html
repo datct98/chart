@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Product Sales Chart</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+</head>
+<body>
+<div id="productSalesChart"></div>
+
+<script th:inline="javascript">
+    /* JavaScript code that retrieves the chart data and generates the chart */
+    var chartDataUrl = "/chart"
+    var chartData = [];
+
+    fetch(chartDataUrl)
+        .then(response => response.json())
+        .then(data => {
+            chartData = data;
+            createChart();
+        });
+
+    function createChart() {
+        Highcharts.chart('productSalesChart', {
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Product Sales'
+            },
+            xAxis: {
+                categories: chartData.map(row => row.name)
+            },
+            yAxis: {
+                title: {
+                    text: 'Sales (USD)'
+                }
+            },
+            series: [
+                {
+                    name: 'Sales',
+                    data: chartData.map(row => row.sales)
+                }
+            ]
+        });
+    }
+</script>
+</body>
+</html>
